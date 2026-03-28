@@ -23,6 +23,7 @@ export function Layout() {
                   <span className="nav-divider" aria-hidden />
                   <NavLink to="/admin/parkings">Admin · Parkings</NavLink>
                   <NavLink to="/admin/bookings">Admin · Bookings</NavLink>
+                  <NavLink to="/admin/users">Admin · Users</NavLink>
                 </>
               )}
               <button

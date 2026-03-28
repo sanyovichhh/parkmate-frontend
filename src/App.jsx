@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthProvider';
 import { AccountPage } from './pages/AccountPage';
 import { AdminBookingsPage } from './pages/admin/AdminBookingsPage';
 import { AdminParkingsPage } from './pages/admin/AdminParkingsPage';
+import { AdminUsersPage } from './pages/admin/AdminUsersPage';
 import { BookingsPage } from './pages/BookingsPage';
 import { HomePage } from './pages/HomePage';
 import { LoginPage } from './pages/LoginPage';
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="admin" element={<AdminRoute />}>
               <Route path="parkings" element={<AdminParkingsPage />} />
               <Route path="bookings" element={<AdminBookingsPage />} />
+              <Route path="users" element={<AdminUsersPage />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
