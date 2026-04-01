@@ -3,10 +3,12 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { listParkings } from '../api/parkings';
 import { Pagination } from '../components/Pagination';
 import { getErrorMessage } from '../utils/apiError';
+import { DateTimeFields } from '../components/DateTimeFields';
 import {
   defaultLocalDatetimeValue,
   isoToLocalDatetimeValue,
   localDatetimeToIso,
+  nowLocalDatetimeValue,
 } from '../utils/datetime';
 
 const PAGE_SIZE = 12;
@@ -52,14 +54,19 @@ export function HomePage() {
     load();
   }, [load]);
 
-  function applyTimeFilter(e) {
-    e.preventDefault();
+  useEffect(() => {
+    setPage(1);
+  }, [atIso]);
+
+  useEffect(() => {
     const next = new URLSearchParams(searchParams);
     if (atIso) next.set('at', atIso);
     else next.delete('at');
-    setSearchParams(next);
-    setPage(1);
-  }
+    const nextAt = next.get('at') ?? '';
+    const curAt = searchParams.get('at') ?? '';
+    if (nextAt === curAt) return;
+    setSearchParams(next, { replace: true });
+  }, [atIso, searchParams, setSearchParams]);
 
   const filtered = useMemo(() => {
     const results = data?.results ?? [];
@@ -79,15 +86,47 @@ export function HomePage() {
         </p>
       </header>
 
-      <form className="filter-bar card" onSubmit={applyTimeFilter}>
-        <label className="field inline">
-          <span>Check availability at</span>
-          <input
-            type="datetime-local"
+      <div className="filter-bar card">
+        <div className="filter-datetime-block">
+          <DateTimeFields
+            legend="Check availability at"
             value={localAt}
-            onChange={(e) => setLocalAt(e.target.value)}
+            onChange={setLocalAt}
+            idPrefix="home-at"
+            timeStep={300}
           />
-        </label>
+          <div className="datetime-quick" aria-label="Quick time presets">
+            <span className="datetime-quick-label">Quick</span>
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={() => setLocalAt(nowLocalDatetimeValue({ stepMinutes: 15 }))}
+            >
+              Now
+            </button>
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={() => setLocalAt(defaultLocalDatetimeValue(1))}
+            >
+              +1 h
+            </button>
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={() => setLocalAt(defaultLocalDatetimeValue(2))}
+            >
+              +2 h
+            </button>
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm"
+              onClick={() => setLocalAt(defaultLocalDatetimeValue(4))}
+            >
+              +4 h
+            </button>
+          </div>
+        </div>
         <label className="checkbox">
           <input
             type="checkbox"
@@ -97,10 +136,7 @@ export function HomePage() {
           />
           <span>Only lots with free spots (uses the time above)</span>
         </label>
-        <button type="submit" className="btn btn-secondary">
-          Apply to URL
-        </button>
-      </form>
+      </div>
 
       {error ? (
         <div className="alert alert-error" role="alert">

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { createBooking } from '../api/bookings';
 import { getParking, getParkingAvailability } from '../api/parkings';
+import { DateTimeFields } from '../components/DateTimeFields';
 import { getErrorMessage } from '../utils/apiError';
 import {
   defaultLocalDatetimeValue,
@@ -193,24 +194,22 @@ export function ParkingDetailPage() {
                 {bookingSuccess}
               </div>
             ) : null}
-            <label className="field">
-              <span>Start</span>
-              <input
-                type="datetime-local"
-                value={startLocal}
-                onChange={(e) => setStartLocal(e.target.value)}
-                required
-              />
-            </label>
-            <label className="field">
-              <span>End</span>
-              <input
-                type="datetime-local"
-                value={endLocal}
-                onChange={(e) => setEndLocal(e.target.value)}
-                required
-              />
-            </label>
+            <DateTimeFields
+              legend="Start"
+              value={startLocal}
+              onChange={setStartLocal}
+              idPrefix="book-start"
+              required
+              timeStep={300}
+            />
+            <DateTimeFields
+              legend="End"
+              value={endLocal}
+              onChange={setEndLocal}
+              idPrefix="book-end"
+              required
+              timeStep={300}
+            />
             <dl className="detail-list compact">
               <div>
                 <dt>Duration</dt>
